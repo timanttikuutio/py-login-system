@@ -71,7 +71,8 @@ def loggedIn():
         emailr, emailrId = email_result
         print("1. show username + email")
         print("2. reset password")
-        print("3. go back to main page")
+        print("3. change username")
+        print("4. go back to main page")
         actions = input("please pick 1 or 2: ")
         if actions == "1":
             cls()
@@ -92,6 +93,17 @@ def loggedIn():
             print(f"password successfully changed, new password is: {new_pass}")
             input("Press Enter to continue...")
         elif actions == "3":
+            cls()
+            mycursor.execute("USE logintest")
+            new_username = input("please enter the new username for your account: ")
+            new_username_sql = "UPDATE users SET username = %s WHERE username = %s AND id = %s"
+            placeholders_new_username = (new_username, passr, emailrId)
+            mycursor.execute(new_username_sql, placeholders_new_username)
+            mydb.commit()
+            cls()
+            print(f"username successfully changed, new username is: {new_username}")
+            input("Press Enter to continue...")
+        elif actions == "4":
             cls()
             options()
     except Exception as e:
