@@ -1,16 +1,23 @@
 from os import error
+from os import system
+from tkinter.constants import N
 import mysql.connector
+import time
 mydb = mysql.connector.connect(
-  host="",
-  user="",
-  password=""
+  host="localhost",
+  user="root",
+  password="egoz2017"
 )
 mycursor = mydb.cursor(buffered=True)
+cls = lambda: system('cls')
+
+
 
 def login():
     try:
         mycursor.execute("USE logintest")
-        login_username = input("Please enter your username or email: ")
+
+        login_username = input("Please enter your username: ")
         login_password = input("Please enter your password: ")
         
         check_login = f"SELECT username, id FROM users WHERE username = '{login_username}'"
@@ -18,18 +25,30 @@ def login():
 
         mycursor.execute(check_login)
         username_result = mycursor.fetchone()
+        global userr, userrId
         userr, userrId = username_result
-            
+
         mycursor.execute(check_password)
         password_result = mycursor.fetchone()
+        global passr, passId
         passr, passId = password_result
         
         if login_username == userr and login_password == passr and userrId == passId:
+            #thing to run when logged in successfully
             print("Logged in successfully")
+            input("Press Enter to continue...")
+            cls()
+            loggedIn()
         else: 
             print("Login failed, wrong username or password")
+            input("Press Enter to continue...")
+            cls()
+            options()
     except:
         print("Login failed, wrong password or username")
+        input("Press Enter to continue...")
+        cls()
+        options()
         
     
 def register():
@@ -44,20 +63,65 @@ def register():
     mydb.commit()
     print("User successfully created! insert id:", mycursor.lastrowid)
     
+def loggedIn():
+    try:
+        check_email = f"SELECT email, id FROM users WHERE id = '{userrId}'"
+        mycursor.execute(check_email)
+        email_result = mycursor.fetchone()
+        emailr, emailrId = email_result
+        print("1. show username + email")
+        print("2. reset password")
+        print("3. go back to main page")
+        actions = input("please pick 1 or 2: ")
+        if actions == "1":
+            cls()
+            print(f'username: {userr} and your id is: {userrId}')
+            print(f'email: {emailr}')
+            input("Press Enter to continue...")
+            cls()
+            loggedIn()
+        elif actions == "2":
+            cls()
+            mycursor.execute("USE logintest")
+            new_pass = input("please enter a new password for your account: ")
+            new_pass_sql = "UPDATE users SET password = %s WHERE password = %s AND id = %s"
+            placeholders_new_password = (new_pass, passr, emailrId)
+            mycursor.execute(new_pass_sql, placeholders_new_password)
+            mydb.commit()
+            cls()
+            print(f"password successfully changed, new password is: {new_pass}")
+            input("Press Enter to continue...")
+        elif actions == "3":
+            cls()
+            options()
+    except Exception as e:
+        print(e)
+    
 
 def options():
     try:
         print("1. login")
         print("2. register")
         options = input("please pick 1 or 2: ")
-        if "1" in options:
+        if options == "1":
+            cls()
             login()
-        elif "2" in options:
+        elif options == "2":
+            cls()
             register()
+        elif options == '':
+            print("please select 1 or 2 only")
+            input("Press Enter to continue...")
+            cls()
+            options()
         else: 
             print("please only select 1 or 2")
+            input("Press Enter to continue...")
+            cls()
             options()
     except:
         print("please only enter the numbers 1 or 2")
+        input("Press Enter to continue...")
+        cls()
         options()
 options()
