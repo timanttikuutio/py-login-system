@@ -73,7 +73,7 @@ def loggedIn():
         print("2. reset password")
         print("3. change username")
         print("4. go back to main page")
-        actions = input("please pick 1 or 2: ")
+        actions = input("please pick 1, 2, 3 or 4: ")
         if actions == "1":
             cls()
             print(f'username: {userr} and your id is: {userrId}')
