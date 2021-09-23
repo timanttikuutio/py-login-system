@@ -6,7 +6,7 @@ import time
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="egoz2017"
+  password=""
 )
 mycursor = mydb.cursor(buffered=True)
 cls = lambda: system('cls')
@@ -99,7 +99,7 @@ def loggedIn():
             mycursor.execute("USE logintest")
             new_username = input("please enter the new username for your account: ")
             new_username_sql = "UPDATE users SET username = %s WHERE username = %s AND id = %s"
-            placeholders_new_username = (new_username, passr, emailrId)
+            placeholders_new_username = (new_username, userr, emailrId)
             mycursor.execute(new_username_sql, placeholders_new_username)
             mydb.commit()
             cls()
