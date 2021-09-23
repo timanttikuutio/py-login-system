@@ -7,15 +7,14 @@ import time
 
 mydb = mysql.connector.connect(
     host="127.0.0.1",
-    user="root",
-    password="",
+    user="timanttikuutio",
+    password="Falcon5547#",
     database="logintest"
 )
 mycursor = mydb.cursor(buffered=True)
 
 
 def cls():
-    print(sys.platform)
     if sys.platform == "linux":
         os.system("clear")
     else:
@@ -29,7 +28,13 @@ def login():
     query = f"SELECT username, email, password, salt, id FROM users WHERE username = %s"
 
     mycursor.execute(query, (login_username, ))
-    username, email, key, salt, user_id = mycursor.fetchone()
+    try:
+        username, email, key, salt, user_id = mycursor.fetchone()
+    except TypeError:
+        print("Invalid Username or Password.")
+        input("Press Enter to continue...")
+        cls()
+        options()
 
     salted_pw = hashlib.pbkdf2_hmac("sha256", login_password.encode("utf-8"), salt, 100000)
 
@@ -81,25 +86,25 @@ def loggedIn(user, email, user_id):
         salted_pw = hashlib.pbkdf2_hmac("sha256", new_password.encode("utf-8"), salt, 100000)
 
         query = "UPDATE users SET password = %s, salt = %s WHERE id = %s"
-        mycursor.execute(query, salted_pw, salt, user_id)
+        mycursor.execute(query, (salted_pw, salt, user_id))
         mydb.commit()
         cls()
         print(f"password successfully changed, new password is: {new_password}")
         input("Press Enter to relog...")
         cls()
-        login()
+        options()
     elif actions == "3":
         cls()
         new_username = input("please enter the new username for your account: ")
         query = "UPDATE users SET username = %s WHERE id = %s"
-        mycursor.execute(query, new_username, user_id)
+        mycursor.execute(query, (new_username, user_id))
         mydb.commit()
 
         cls()
         print(f"username successfully changed, new username is: {new_username}")
-        input("Press Enter to continue...")
+        input("Press Enter to relog...")
         cls()
-        loggedIn(user, email, user_id)
+        options()
     elif actions == "4":
         cls()
         options()
