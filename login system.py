@@ -92,6 +92,8 @@ def loggedIn():
             cls()
             print(f"password successfully changed, new password is: {new_pass}")
             input("Press Enter to continue...")
+            cls()
+            loggedIn()
         elif actions == "3":
             cls()
             mycursor.execute("USE logintest")
@@ -103,6 +105,8 @@ def loggedIn():
             cls()
             print(f"username successfully changed, new username is: {new_username}")
             input("Press Enter to continue...")
+            cls()
+            loggedIn()
         elif actions == "4":
             cls()
             options()
